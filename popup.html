@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body {
+      width: 450px;
+      min-height: 300px;
+      padding: 16px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+      background: #0f0f0f;
+      color: #e0e0e0;
+    }
+    h2 {
+      margin: 0 0 16px 0;
+      font-size: 18px;
+      color: #4ade80;
+    }
+    input {
+      width: calc(100% - 20px);
+      padding: 10px;
+      margin-bottom: 12px;
+      border: 1px solid #333;
+      border-radius: 6px;
+      background: #1a1a1a;
+      color: #e0e0e0;
+      font-size: 13px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #4ade80;
+      color: #000;
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    button:hover { background: #22c55e; }
+    button:disabled { background: #333; color: #666; cursor: not-allowed; }
+    #results {
+      margin-top: 16px;
+    }
+    .drop {
+      padding: 12px;
+      margin-bottom: 8px;
+      background: #1a1a1a;
+      border-radius: 6px;
+      border-left: 3px solid #333;
+    }
+    .drop.eligible { border-left-color: #4ade80; }
+    .drop.ineligible { border-left-color: #ef4444; }
+    .drop.error { border-left-color: #f59e0b; }
+    .drop-name {
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+    .drop-status {
+      font-size: 12px;
+      opacity: 0.8;
+    }
+    .claim-btn {
+      margin-top: 8px;
+      padding: 6px 12px;
+      background: #4ade80;
+      color: #000;
+      border: none;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .claim-btn:hover { background: #22c55e; }
+    .loading {
+      text-align: center;
+      padding: 20px;
+      color: #4ade80;
+    }
+  </style>
+</head>
+<body>
+  <h2>🎁 Airdrop Eligibility Checker</h2>
+  <input id="wallet" placeholder="Enter EVM wallet address (0x...)" />
+  <button id="check">Check Eligibility</button>
+  <div id="results"></div>
+  <script src="utils.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
