@@ -1,63 +1,63 @@
 const AIRDROPS = [
   {
     name: 'Monad',
-    api: 'https://claim.monad.xyz/api/eligibility/',
-    claim: 'https://claim.monad.xyz',
+    api: 'https://api.monad.xyz/eligibility/',
+    claim: 'https://monad.xyz/claim',
     check: (data) => data?.eligible === true || data?.points > 0
   },
   {
     name: 'LayerZero V2',
-    api: 'https://layerzero.network/api/check/',
-    claim: 'https://layerzero.network/claim',
-    check: (data) => data?.eligible === true
+    api: 'https://api.layerzero.xyz/v1/eligibility/',
+    claim: 'https://layerzero.xyz/claim',
+    check: (data) => data?.eligible === true || data?.points > 0
   },
   {
     name: 'Eclipse SVM',
-    api: 'https://testnet.eclipse.xyz/api/participant/',
+    api: 'https://api.eclipse.xyz/participant/',
     claim: 'https://eclipse.xyz/claim',
-    check: (data) => data?.participant === true
+    check: (data) => data?.participant === true || data?.eligible === true
   },
   {
     name: 'Base Network',
-    api: 'https://base.org/api/activity/',
+    api: 'https://api.base.org/user/activity/',
     claim: 'https://base.org/claim',
-    check: (data) => data?.active === true || data?.transactions > 0
+    check: (data) => data?.active === true || data?.transactions > 0 || data?.eligible === true
   },
   {
-    name: 'Metamask Snaps',
-    api: 'https://metamask.io/api/snaps/usage/',
-    claim: 'https://metamask.io/snaps',
-    check: (data) => data?.eligible === true
+    name: 'Arbitrum',
+    api: 'https://api.arbitrum.xyz/eligibility/',
+    claim: 'https://arbitrum.foundation/claim',
+    check: (data) => data?.eligible === true || data?.points > 0
   },
   {
-    name: 'Arbitrum Season 2',
-    api: 'https://arbitrum.io/api/season2/',
-    claim: 'https://arbitrum.io/claim',
-    check: (data) => data?.eligible === true
-  },
-  {
-    name: 'Optimism Retro',
-    api: 'https://optimism.io/api/retro/',
+    name: 'Optimism',
+    api: 'https://api.optimism.xyz/retro/eligibility/',
     claim: 'https://optimism.io/retropgf',
-    check: (data) => data?.eligible === true
+    check: (data) => data?.eligible === true || data?.retroScore > 0
   },
   {
-    name: 'Wormhole',
-    api: 'https://wormhole.com/api/eligibility/',
-    claim: 'https://wormhole.com/claim',
-    check: (data) => data?.eligible === true
+    name: 'Polygon',
+    api: 'https://api.polygon.technology/airdrop/',
+    claim: 'https://polygon.technology/claim',
+    check: (data) => data?.eligible === true || data?.amount > 0
   },
   {
-    name: 'Meteora (Solana)',
-    api: 'https://meteora.ag/api/fee/',
-    claim: 'https://meteora.ag/airdrop',
-    check: (data) => data?.eligible === true || data?.fees > 0
+    name: 'Solana',
+    api: 'https://api.solana.xyz/airdrop/check/',
+    claim: 'https://solana.com/claim',
+    check: (data) => data?.eligible === true || data?.balance > 0
   },
   {
-    name: 'OpenSea SEA',
-    api: 'https://opensea.io/api/sea/eligibility/',
-    claim: 'https://opensea.io/claim',
-    check: (data) => data?.eligible === true
+    name: 'Cosmos',
+    api: 'https://api.cosmos.network/airdrop/',
+    claim: 'https://cosmos.network/claim',
+    check: (data) => data?.eligible === true || data?.amount > 0
+  },
+  {
+    name: 'Starknet',
+    api: 'https://api.starknet.io/airdrop/',
+    claim: 'https://starknet.io/claim',
+    check: (data) => data?.eligible === true || data?.amount > 0
   }
 ];
 
@@ -78,10 +78,24 @@ document.getElementById('check').addEventListener('click', async () => {
     try {
       const response = await fetch(drop.api + wallet, {
         method: 'GET',
-        headers: { 'Accept': 'application/json' }
+        headers: { 
+          'Accept': 'application/json',
+          'User-Agent': 'Mozilla/5.0'
+        },
+        mode: 'cors'
       });
       
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      if (!response.ok) {
+        if (response.status === 404) {
+          return {
+            name: drop.name,
+            eligible: false,
+            claim: drop.claim,
+            error: 'Not eligible or wallet not found'
+          };
+        }
+        throw new Error(`HTTP ${response.status}`);
+      }
       
       const data = await response.json();
       const eligible = drop.check(data);
@@ -107,7 +121,7 @@ document.getElementById('check').addEventListener('click', async () => {
   results.innerHTML = allResults.map(result => {
     const statusClass = result.error ? 'error' : (result.eligible ? 'eligible' : 'ineligible');
     const statusText = result.error 
-      ? `⚠️ Check failed: ${result.error}` 
+      ? `⚠️ ${result.error}` 
       : (result.eligible ? '✅ Eligible!' : '❌ Not eligible');
     
     const claimBtn = result.eligible && !result.error
