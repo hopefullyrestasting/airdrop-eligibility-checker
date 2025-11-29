@@ -1,24 +1,17 @@
 {
   "manifest_version": 3,
-  "name": "Airdrop Eligibility Checker 2025",
-  "version": "1.0.0",
-  "description": "Detects real 2025-2026 airdrop eligibility - official claims only",
+  "name": "Airdrop Checker 2025",
+  "version": "1.0.1",
+  "description": "Real & safe airdrop eligibility checker",
+  "action": { 
+    "default_popup": "popup.html"
+  },
   "permissions": ["storage"],
   "host_permissions": ["https://*/*"],
-  "action": {
-    "default_popup": "popup.html",
-    "default_icon": {
-      "16": "icon16.png",
-      "48": "icon48.png",
-      "128": "icon128.png"
-    }
+  "content_security_policy": {
+    "extension_pages": "script-src 'self' 'unsafe-eval' https://www.googletagmanager.com https://miles.plumenetwork.xyz https://app.berachain.com https://gold.blast.io; object-src 'self'"
   },
   "background": {
     "service_worker": "background.js"
-  },
-  "icons": {
-    "16": "icon16.png",
-    "48": "icon48.png",
-    "128": "icon128.png"
   }
 }
